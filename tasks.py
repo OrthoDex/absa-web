@@ -4,11 +4,11 @@ import absa as AB
 import socketio
 from flask import json
 
-celery = Celery('tasks', broker='redis://localhost:6379/10')
+celery = Celery('tasks', broker=os.environ.get("REDIS_URL"))
 
 @celery.task
 def run_analysis(video_id, room_id):
-    mgr = socketio.KombuManager('redis://localhost:6379/12', write_only=True)
+    mgr = socketio.KombuManager(os.environ.get('REDISCLOUD_URL'), write_only=True)
 
     youtube = GC.GetComments()
 

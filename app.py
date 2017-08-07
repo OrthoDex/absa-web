@@ -7,7 +7,7 @@ import socketio
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ["SECRET_KEY"]
 
-mgr = socketio.KombuManager('redis://localhost:6379/12')
+mgr = socketio.KombuManager(os.environ.get('REDISCLOUD_URL'))
 sio = socketio.Server(client_manager=mgr, async_mode='threading')
 
 app.wsgi_app = socketio.Middleware(sio, app.wsgi_app)
