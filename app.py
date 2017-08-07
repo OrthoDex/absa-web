@@ -40,6 +40,6 @@ def analyze():
 if __name__ == '__main__':
     if on_heroku:
         port = os.environ.get('PORT')
-    else
+    else:
         port = 5000
     app.run(threaded=True, host='0.0.0.0', port=port)
