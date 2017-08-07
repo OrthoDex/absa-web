@@ -4,3 +4,4 @@ conll2000
 movie_reviews
 punkt
 averaged_perceptron_tagger
+stopwords
