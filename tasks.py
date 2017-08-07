@@ -13,8 +13,8 @@ def run_analysis(video_id, room_id):
 
     youtube = GC.GetComments()
 
-    print("Celery: Initialized YouTube retreiver.")
-    mgr.emit('comments', data=json.dumps({"message": "Initialized YouTube retreiver."}), room=room_id)
+    print("Celery: Initialized YouTube retriever.")
+    mgr.emit('comments', data=json.dumps({"message": "Initialized YouTube retriever."}), room=room_id)
 
 
     results = youtube.comments_list(part='snippet, replies', videoId=video_id, maxResults=100, fields='items')
