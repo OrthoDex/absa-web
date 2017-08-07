@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
   // SocketIO message receive code
-  var socket = io('http://localhost:5000');
+  var socket = io('http://localhost');
   var progressBar = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\"aria-valuenow=\"0\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: 0%\"></div></div>";
   // Form submission code
   $('#submit_form').submit(function(event) {

@@ -7,6 +7,8 @@ import socketio
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ["SECRET_KEY"]
 
+on_heroku =  os.environ.get('ON_HEROKU')
+
 mgr = socketio.KombuManager(os.environ.get('REDISCLOUD_URL'))
 sio = socketio.Server(client_manager=mgr, async_mode='threading')
 
@@ -36,4 +38,8 @@ def analyze():
         return "ok", 200
 
 if __name__ == '__main__':
-    app.run(threaded=True)
+    if on_heroku:
+        port = os.environ.get('PORT')
+    else
+        port = 5000
+    app.run(threaded=True, host='0.0.0.0', port=port)
