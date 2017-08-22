@@ -1,4 +1,5 @@
 import React from 'react';
+import jQuery from 'jquery';
 
 export default class FormComponent extends React.Component {
   constructor() {
@@ -6,8 +7,7 @@ export default class FormComponent extends React.Component {
 
     this.state = {
       validInput: 0,
-      message: "",
-      data: []
+      message: ""
     };
 
     this._handleSubmit = this._handleSubmit.bind(this);
@@ -58,12 +58,12 @@ export default class FormComponent extends React.Component {
         message: "Please enter a valid full YouTube video link."
       });
     } else {
-      $('input[type="submit"]').attr('disabled', true);
+      jQuery('input[type="submit"]').attr('disabled', true);
       this.setState({
         validInput: 1,
         message: "Thank you! Please wait sometime till the analysis is done. This usually takes about 5 minutes."
       })
-      this._fetchData();
+      this.props.fetchData();
     }
   }
 
@@ -74,27 +74,5 @@ export default class FormComponent extends React.Component {
     } else {
       return result[1];
     }
-  }
-
-  _fetchData() {
-    $.ajax({
-      method: 'GET',
-      url: 'data.json',
-      success: (data) => {
-        $('input[type="submit"]').attr('disabled', false);
-        this.setState({
-          data,
-          validInput: 1
-        });
-      },
-      error: (message) => {
-        $('input[type="submit"]').attr('disabled', false);
-        console.log(message);
-        this.setState({
-          validInput: 2,
-          message: "A server error ocurred. I'll get it fixed soon. Please try again later."
-        })
-      }
-    });
   }
 }
