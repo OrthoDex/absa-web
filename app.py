@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request
 import os
-from submit_form import SimpleForm
-from tasks import run_analysis
+import lib
 import socketio
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ["SECRET_KEY"]
+app = Flask(__name__, static_url_path='', static_folder='public', template_folder='public')
+app.config['STATIC_FOLDER'] = 'public'
 
 on_heroku =  os.environ.get('ON_HEROKU')
 
@@ -24,8 +23,7 @@ def disconnect(sid):
 
 @app.route('/', methods=['GET'])
 def index():
-    form = SimpleForm()
-    return render_template('index.html', form=form)
+    return render_template('index.html')
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
@@ -34,12 +32,15 @@ def analyze():
         return "error", 400
     else:
         print('room id: ' + request.form["uid"])
-        run_analysis.delay(request.form["video_id"], request.form["uid"])
+        lib.tasks.run_analysis.delay(request.form["video_id"], request.form["uid"])
         return "ok", 200
 
 if __name__ == '__main__':
     if on_heroku:
         port = int(os.environ.get('PORT'))
+        host = '0.0.0.0'
     else:
+        app.debug = True
         port = 5000
-    app.run(threaded=True, host='0.0.0.0', port=port)
+        host = '127.0.0.1'
+    app.run(threaded=True, host=host, port=port)

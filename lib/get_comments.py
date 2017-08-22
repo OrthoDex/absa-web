@@ -16,7 +16,7 @@ from oauth2client.tools import argparser, run_flow
 # The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
 # the OAuth 2.0 information for this application, including its client_id and
 # client_secret.
-CLIENT_SECRETS_FILE = "client_secrets.json"
+CLIENT_SECRETS_FILE = "./lib/credentials/client_secrets.json"
 
 # This OAuth 2.0 access scope allows for full read/write access to the
 # authenticated user's account and requires requests to use an SSL connection.
@@ -37,7 +37,7 @@ class GetComments:
       flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE, scope=YOUTUBE_READ_WRITE_SSL_SCOPE,
         message=MISSING_CLIENT_SECRETS_MESSAGE)
 
-      storage = Storage("youtube-api-snippets-oauth2.json")
+      storage = Storage("./lib/credentials/youtube-api-snippets-oauth2.json")
       credentials = storage.get()
       args = dict()
 

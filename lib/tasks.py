@@ -1,6 +1,6 @@
 from celery import Celery
-import get_comments as GC
-import absa as AB
+import lib.get_comments as GC
+import lib.absa as AB
 import os
 import socketio
 from flask import json
@@ -16,7 +16,6 @@ def run_analysis(video_id, room_id):
     print("Celery: Initialized YouTube retriever.")
     mgr.emit('comments', data=json.dumps({"message": "Initialized YouTube retriever."}), room=room_id)
 
-
     results = youtube.comments_list(part='snippet, replies', videoId=video_id, maxResults=100, fields='items')
     if results != "404":
         print("Celery: Retrieve YouTube Comments.")
@@ -30,7 +29,6 @@ def run_analysis(video_id, room_id):
         mgr.emit('comments', data=json.dumps({"message": "Analysis Complete"}), room=room_id)
         mgr.emit('comments', data=json.dumps(data_values), room=room_id)
 
-        return data_values
     else:
         print("Http 404!")
         mgr.emit('comments', data=json.dumps({"error": "An error has ocurred. It could be that the video does not exist. Please try again later."}), room=room_id)
