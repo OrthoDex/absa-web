@@ -4,6 +4,7 @@ import FormComponent from './form-component';
 import ProgressBar from './progress-bar';
 import PlotComponent from './plot-component';
 import { subscribeToResults } from '../result-listener';
+import { STATUS_ERROR, STATUS_SUCCESS, STATUS_NEUTRAL, STATUS_DEFAULT } from '../status_constants';
 
 export default class PageComponent extends React.Component {
   constructor() {
@@ -16,13 +17,13 @@ export default class PageComponent extends React.Component {
     socketId = subscribeToResults((output) => {
       console.log("Received data.");
       let message = "";
-      let status = 2;
+      let status = STATUS_DEFAULT;
       let data = [];
       let progress = this.state.progress;
       const results = JSON.parse(output);
 
       if(results["message"] != null) {
-        status = 1;
+        status = STATUS_SUCCESS;
         message = {
           id: this.state.messages.length + 1,
           text: results["message"],
@@ -31,7 +32,7 @@ export default class PageComponent extends React.Component {
         progress += 15;
       } else if(results["error"] != null) {
         progress = 0;
-        status = -1;
+        status = STATUS_ERROR;
         message = {
           id: 1,
           text: results["error"],
@@ -41,7 +42,7 @@ export default class PageComponent extends React.Component {
       } else {
         console.log("Fetch complete.");
         data = results;
-        status = 1;
+        status = STATUS_SUCCESS;
         progress = 100;
         message = {
           id: this.state.messages.length + 1,
@@ -63,7 +64,7 @@ export default class PageComponent extends React.Component {
       messages: [],
       progress: 0,
       data: [],
-      status: 2,
+      status: STATUS_DEFAULT,
       socketId
     }
   }
@@ -94,21 +95,21 @@ export default class PageComponent extends React.Component {
   }
 
   _getMessages() {
-    if(this.state.status != 2) {
+    if(this.state.status != STATUS_DEFAULT) {
       return this.state.messages.map((message) => {
         return <p key={message.id}
                   className={`alert alert-${this._getStatus(message.status)}`}>
                   {message.text}
-                  {message.status == 0 ? <a href="https://github.com/celery/celery/issues/3773" target="_blank">Issue Reported Here</a> : null}
+                  {message.status == STATUS_NEUTRAL ? <a href="https://github.com/celery/celery/issues/3773" target="_blank">Issue Reported Here</a> : null}
                   </p>
       });
     }
   }
 
   _getStatus(status) {
-    if (status == 0) {
+    if (status == STATUS_NEUTRAL) {
       return "warning"
-    } else if (status == 1) {
+    } else if (status == STATUS_SUCCESS) {
       return "success"
     } else {
       return "danger"
@@ -116,6 +117,13 @@ export default class PageComponent extends React.Component {
   }
 
   _fetchData(videoId) {
+    this.setState({
+      messages: [],
+      progress: 0,
+      data: [],
+      status: STATUS_DEFAULT
+    });
+
     var formData = {
         'video_id' : videoId,
         'uid': this.state.socketId
@@ -133,11 +141,11 @@ export default class PageComponent extends React.Component {
         const message =  {
           id: this.state.messages.length + 1,
           text: "If the process takes longer than 10-15 minutes, please try again after an hour or so. This is caused by an error in the Background Worker.",
-          status: 0
+          status: STATUS_NEUTRAL
         };
         this.setState({
           data: [],
-          status: 0,
+          status: STATUS_NEUTRAL,
           messages: this.state.messages.concat([message])
         });
       },
@@ -147,12 +155,12 @@ export default class PageComponent extends React.Component {
         const message = {
           id: this.state.messages.length + 1,
           text: "A server error ocurred. I'll get it fixed soon. Please try again later.",
-          status: -1
+          status: STATUS_ERROR
         };
         this.setState({
           data: [],
           messages: message,
-          status: -1
+          status: STATUS_ERROR
         })
       }
     });
