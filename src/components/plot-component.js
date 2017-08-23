@@ -15,6 +15,9 @@ export default class PlotComponent extends React.Component {
     Plotly.newPlot(this.boxPlot);
     Plotly.newPlot(this.histogram);
 
+    if(this.props.data != null)
+      this._plotGraph(this.props.data);
+
     window.addEventListener("resize", this._updatePlot);
   }
 
@@ -23,9 +26,6 @@ export default class PlotComponent extends React.Component {
   }
 
   render() {
-    if(this.props.data != null)
-      this._plotGraph();
-
     return(
       <div className="container-fluid">
         <div id="sent-boxplot">

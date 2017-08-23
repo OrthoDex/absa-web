@@ -4,16 +4,15 @@ export default class ProgressBar extends React.Component {
   constructor() {
     super();
 
-    this.state = {
-      progress: 0
-    }
+    this._isActive = this._isActive.bind(this);
   }
 
   render() {
-    if (this.state.progress > 0 && this.state.progress < 100) {
+    if (this.props.progress > 0) {
+      const percentage = this.props.progress + '%';
       return(
         <div className="progress">
-          <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow={this.state.progress} aria-valuemin="0" aria-valuemax="100" />
+          <div className={`progress-bar progress-bar-striped ${this._isActive()}`} role="progressbar" style={{width : percentage}} aria-valuenow={this.props.progress} aria-valuemin="0" aria-valuemax="100" />
         </div>
       );
     }
@@ -21,6 +20,14 @@ export default class ProgressBar extends React.Component {
       return(
         <div />
       );
+    }
+  }
+
+  _isActive() {
+    if (this.props.progress == 100) {
+      return null;
+    } else {
+      return "active";
     }
   }
 }
