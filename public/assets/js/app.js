@@ -7,19 +7,19 @@
 //   $('#submit_form').submit(function(event) {
 //     // event.preventDefault();
 //
-//     // $('#submit').prop('disabled', true);
-//     // $('#graphs').hide();
-//     // $('.result').remove();
-//     // $('.alert').remove();
-//     // var csrf_token = $('input[name=csrf_token]');
-//     //
-//     // $.ajaxSetup({
-//     //     beforeSend: function(xhr, settings) {
-//     //         if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-//     //             xhr.setRequestHeader("X-CSRFToken", csrf_token);
-//     //         }
-//     //     }
-//     // });
+//     $('#submit').prop('disabled', true);
+//     $('#graphs').hide();
+//     $('.result').remove();
+//     $('.alert').remove();
+//     var csrf_token = $('input[name=csrf_token]');
+//
+//     $.ajaxSetup({
+//         beforeSend: function(xhr, settings) {
+//             if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+//                 xhr.setRequestHeader("X-CSRFToken", csrf_token);
+//             }
+//         }
+//     });
 //
 //     var video_id = $('input[name=video_id]').val();
 //     // var uid = Math.floor((Math.random() * 10) + 1).toString() + video_id

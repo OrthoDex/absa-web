@@ -6,11 +6,24 @@ import socketio
 app = Flask(__name__, static_url_path='', static_folder='public', template_folder='public')
 app.config['STATIC_FOLDER'] = 'public'
 
-on_heroku =  os.environ.get('ON_HEROKU')
+on_heroku = os.environ.get('ON_HEROKU')
 
-mgr = socketio.KombuManager(os.environ.get('REDISCLOUD_URL'))
+if on_heroku:
+    mgr = socketio.KombuManager(os.environ.get('REDISCLOUD_URL'))
+else:
+    mgr = socketio.KombuManager('redis://localhost:6379/12')
+
+@app.after_request
+def after_request(response):
+    if app.debug:
+        print("Debug mode.")
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        return response
+
+
 sio = socketio.Server(client_manager=mgr, async_mode='threading')
-
 app.wsgi_app = socketio.Middleware(sio, app.wsgi_app)
 
 @sio.on('connect')

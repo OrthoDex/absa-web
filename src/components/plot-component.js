@@ -23,6 +23,9 @@ export default class PlotComponent extends React.Component {
   }
 
   render() {
+    if(this.props.data != null)
+      this._plotGraph();
+
     return(
       <div className="container-fluid">
         <div id="sent-boxplot">

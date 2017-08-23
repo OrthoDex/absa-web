@@ -13,7 +13,6 @@ export default class FormComponent extends React.Component {
     this._handleSubmit = this._handleSubmit.bind(this);
     this._submitStatus = this._submitStatus.bind(this);
     this._helpTextStatus = this._helpTextStatus.bind(this);
-
   }
 
   render() {
@@ -63,7 +62,7 @@ export default class FormComponent extends React.Component {
         validInput: 1,
         message: "Thank you! Please wait sometime till the analysis is done. This usually takes about 5 minutes."
       })
-      this.props.fetchData();
+      this.props.fetchData(result);
     }
   }
 

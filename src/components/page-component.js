@@ -3,19 +3,53 @@ import jQuery from 'jquery';
 import FormComponent from './form-component';
 import ProgressBar from './progress-bar';
 import PlotComponent from './plot-component';
+import { subscribeToResults } from '../result-listener';
 
 export default class PageComponent extends React.Component {
   constructor() {
     super();
 
+    this._fetchData = this._fetchData.bind(this);
+
+    let socketId = null;
+    //SocketIO Listener Callback
+    socketId = subscribeToResults((data) => {
+      console.log("Received data size: " + data.length);
+      let message = "";
+      let status = 2;
+      let progress = this.state.progress;
+      let results = JSON.parse(data);
+
+      if(results["message"] != null) {
+        message = this.state.message + "\n" + results["message"];
+        status = 1;
+        progress += 15;
+      } else if(results["error"] != null) {
+        message = results["error"];
+        progress = 0;
+        status = -1;
+        results = [];
+      } else {
+        status = 1;
+        progress = 0;
+      }
+
+      this.setState({
+        data: results,
+        progress,
+        message,
+        status
+      })
+    });
+
+
     this.state = {
       progress: 0,
       message: "",
       data: [],
-      status: 2
+      status: 2,
+      socketId
     }
-
-    this._fetchData = this._fetchData.bind(this);
   }
 
   render() {
@@ -34,7 +68,7 @@ export default class PageComponent extends React.Component {
         </div>
         <div className="container col-sm-8 col-sm-offset-2">
           <div className="row">
-            { this.state.data.length != 0 ? <PlotComponent ref="childPlot"/> : null}
+            { this.state.data.length != 0 ? <PlotComponent data={this.state.data}/> : null}
           </div>
         </div>
       </div>
@@ -51,19 +85,26 @@ export default class PageComponent extends React.Component {
     }
   }
 
-  _fetchData() {
+  _fetchData(videoId) {
+    var formData = {
+        'video_id' : videoId,
+        'uid': this.state.socketId
+    };
+    console.log("Sending request to socket " + this.state.socketId);
+
     jQuery.ajax({
-      method: 'GET',
-      url: 'data.json',
+      method: 'POST',
+      url: 'http://localhost:5000/analyze',
+      data: formData,
+      encode: true,
       success: (data) => {
         jQuery('input[type="submit"]').attr('disabled', false);
         console.log(data);
         this.setState({
-          data,
+          data: [],
           message: "If the process takes longer than 10-15 minutes, please try again after an hour or so. This is caused by an error in the Background Worker.",
           status: 0
         });
-        this.refs.childPlot._plotGraph(data);
       },
       error: () => {
         jQuery('input[type="submit"]').attr('disabled', false);
