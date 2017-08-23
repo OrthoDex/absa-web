@@ -2,8 +2,24 @@
 //
 //   // SocketIO message receive code
 //   var socket = io(window.location.href);
+//   // var progressBar = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\"aria-valuenow=\"0\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: 0%\"></div></div>";
 //   // Form submission code
 //   $('#submit_form').submit(function(event) {
+//     // event.preventDefault();
+//
+//     // $('#submit').prop('disabled', true);
+//     // $('#graphs').hide();
+//     // $('.result').remove();
+//     // $('.alert').remove();
+//     // var csrf_token = $('input[name=csrf_token]');
+//     //
+//     // $.ajaxSetup({
+//     //     beforeSend: function(xhr, settings) {
+//     //         if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+//     //             xhr.setRequestHeader("X-CSRFToken", csrf_token);
+//     //         }
+//     //     }
+//     // });
 //
 //     var video_id = $('input[name=video_id]').val();
 //     // var uid = Math.floor((Math.random() * 10) + 1).toString() + video_id

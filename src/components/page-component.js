@@ -2,6 +2,7 @@ import React from 'react';
 import jQuery from 'jquery';
 import FormComponent from './form-component';
 import ProgressBar from './progress-bar';
+import PlotComponent from './plot-component';
 
 export default class PageComponent extends React.Component {
   constructor() {
@@ -26,17 +27,14 @@ export default class PageComponent extends React.Component {
               <h2>Enter YouTube Video link</h2>
               <p>For best viewing, please view this site on a desktop.</p>
                   <FormComponent fetchData={this._fetchData}/>
-                  { this.state.status != 2 ? <p className={`alert alert-${this._getStatus()}`}>{this.state.message} {this.state.status == 0 ? <a href="https://github.com/celery/celery/issues/3773">Issue Reported Here</a> : null}</p> : null }
+                  { this.state.status != 2 ? <p className={`alert alert-${this._getStatus()}`}>{this.state.message} {this.state.status == 0 ? <a href="https://github.com/celery/celery/issues/3773" target="_blank">Issue Reported Here</a> : null}</p> : null }
                   <ProgressBar progress={this.state.progress}/>
             </div>
           </div>
         </div>
         <div className="container col-sm-8 col-sm-offset-2">
           <div className="row">
-            <div className="container-fluid">
-              <div id="graphs">
-              </div>
-            </div>
+            { this.state.data.length != 0 ? <PlotComponent ref="childPlot"/> : null}
           </div>
         </div>
       </div>
@@ -65,6 +63,7 @@ export default class PageComponent extends React.Component {
           message: "If the process takes longer than 10-15 minutes, please try again after an hour or so. This is caused by an error in the Background Worker.",
           status: 0
         });
+        this.refs.childPlot._plotGraph(data);
       },
       error: () => {
         jQuery('input[type="submit"]').attr('disabled', false);
