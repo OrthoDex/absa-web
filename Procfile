@@ -1,2 +1,2 @@
 web: python app.py
-worker: celery -A tasks worker --loglevel=info
+worker: celery -A lib.tasks worker --loglevel=info

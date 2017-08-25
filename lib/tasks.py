@@ -14,10 +14,10 @@ else:
     SOCKET_IO_BROKER = 'redis://localhost:6379/12'
     CELERY_BROKER = 'redis://localhost:6379/10'
 
-celery = Celery('tasks', broker=CELERY_BROKER, result_backend=CELERY_BROKER)
+celery = Celery('tasks', broker=CELERY_BROKER)
 
-@celery.task
-def run_analysis(video_id, room_id):
+@celery.task(serializer='json', bind=True, default_retry_delay=5, max_retries=5)
+def run_analysis(self, video_id, room_id):
     mgr = socketio.KombuManager(SOCKET_IO_BROKER, write_only=True)
     #
     # mgr.emit('results', data=json.dumps({"message": "Initialized YouTube retriever."}), room=room_id)
@@ -30,14 +30,14 @@ def run_analysis(video_id, room_id):
     #
     # mgr.emit('results', data=json.dumps(data_values), room=room_id)
 
-    youtube = GC.GetComments()
+    try:
+        youtube = GC.GetComments()
 
-    print("Celery: Initialized YouTube retriever.")
-    mgr.emit('results', data=json.dumps({"message": "Initialized YouTube retriever."}), room=room_id)
+        print("Celery: Initialized YouTube retriever.")
+        mgr.emit('results', data=json.dumps({"message": "Initialized YouTube retriever."}), room=room_id)
 
-    results = youtube.comments_list(part='snippet, replies', videoId=video_id, maxResults=100, fields='items')
+        results = youtube.comments_list(part='snippet, replies', videoId=video_id, maxResults=100, fields='items')
 
-    if results != "404":
         print("Celery: Retrieved YouTube Comments.")
 
         mgr.emit('results', data=json.dumps({"message": "Retrieve YouTube Comments."}), room=room_id)
@@ -49,6 +49,7 @@ def run_analysis(video_id, room_id):
         mgr.emit('results', data=json.dumps({"message": "Analysis Complete"}), room=room_id)
         mgr.emit('results', data=json.dumps(data_values), room=room_id)
 
-    else:
-        print("Http 404!")
-        mgr.emit('results', data=json.dumps({"error": "An error has ocurred. It could be that the video does not exist. Please try again later."}), room=room_id)
+    except Exception as e:
+        print("Celery Error ocurred!", e)
+        mgr.emit('results', data=json.dumps({"error": "An error has ocurred. Restarting analysis."}), room=room_id)
+        self.retry()

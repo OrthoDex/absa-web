@@ -34,7 +34,7 @@ export default class PageComponent extends React.Component {
         progress = 0;
         status = STATUS_ERROR;
         message = {
-          id: 1,
+          id: this.state.messages.length + 1,
           text: results["error"],
           status: status
         };
