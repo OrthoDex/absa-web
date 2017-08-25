@@ -52,7 +52,7 @@ def analyze():
 
 if __name__ == '__main__':
     if on_heroku == "True":
-        print("App: Running on production.")
+        print("Main Application: Running on production.")
         port = int(os.environ.get('PORT'))
         host = '0.0.0.0'
     else:
