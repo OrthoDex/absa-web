@@ -8,7 +8,7 @@ app.config['STATIC_FOLDER'] = 'public'
 
 on_heroku = os.environ.get('ON_HEROKU')
 
-if on_heroku:
+if on_heroku == "True":
     mgr = socketio.KombuManager(os.environ.get('REDISCLOUD_URL'))
 else:
     mgr = socketio.KombuManager('redis://localhost:6379/12')
@@ -20,6 +20,8 @@ def after_request(response):
         response.headers.add('Access-Control-Allow-Origin', '*')
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
         response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        return response
+    else:
         return response
 
 
@@ -49,7 +51,8 @@ def analyze():
         return "ok", 200
 
 if __name__ == '__main__':
-    if on_heroku:
+    if on_heroku == "True":
+        print("App: Running on production.")
         port = int(os.environ.get('PORT'))
         host = '0.0.0.0'
     else:
