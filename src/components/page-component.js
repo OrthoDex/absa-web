@@ -132,7 +132,7 @@ export default class PageComponent extends React.Component {
 
     jQuery.ajax({
       method: 'POST',
-      url: 'http://localhost:5000/analyze',
+      url: '/analyze',
       data: formData,
       encode: true,
       success: (data) => {
