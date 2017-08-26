@@ -17,6 +17,7 @@ export default class PageComponent extends React.Component {
     socketId = subscribeToResults((output) => {
       console.log("Received data.");
       let message = "";
+      let messages = [];
       let status = STATUS_DEFAULT;
       let data = [];
       let progress = this.state.progress;
@@ -30,15 +31,17 @@ export default class PageComponent extends React.Component {
           status: status
         };
         progress += 15;
+        messages = this.state.messages.concat([message]);
       } else if(results["error"] != null) {
         progress = 0;
         status = STATUS_ERROR;
         message = {
-          id: this.state.messages.length + 1,
+          id: 1,
           text: results["error"],
           status: status
         };
         data = [];
+        messages = [message];
       } else {
         console.log("Fetch complete.");
         data = results;
@@ -49,12 +52,13 @@ export default class PageComponent extends React.Component {
           text: "Here are the results!",
           status: status
         };
+        messages = this.state.messages.concat([message]);
       }
 
       this.setState({
         data,
         progress,
-        messages: this.state.messages.concat([message]),
+        messages,
         status
       })
     });
@@ -159,7 +163,8 @@ export default class PageComponent extends React.Component {
         };
         this.setState({
           data: [],
-          messages: message,
+          messages: [message],
+          progress: 0,
           status: STATUS_ERROR
         })
       }
