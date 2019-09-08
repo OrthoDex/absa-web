@@ -27,6 +27,8 @@ Flask-WTF = "==0.14.2"
 Jinja2 = "==2.7.3"
 Werkzeug = "==0.10.4"
 WTForms = "==2.1"
+gunicorn = "*"
+eventlet = "*"
 
 [requires]
 python_version = "2.7"

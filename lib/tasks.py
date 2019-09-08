@@ -2,6 +2,8 @@ from celery import Celery
 import lib.get_comments as GC
 import lib.absa as AB
 import os
+import eventlet
+eventlet.monkey_patch()
 import socketio
 from flask import json
 

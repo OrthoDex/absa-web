@@ -25,7 +25,7 @@ def after_request(response):
         return response
 
 
-sio = socketio.Server(client_manager=mgr, async_mode='threading')
+sio = socketio.Server(client_manager=mgr, async_mode='eventlet')
 app.wsgi_app = socketio.Middleware(sio, app.wsgi_app)
 
 @sio.on('connect')
@@ -59,4 +59,4 @@ if __name__ == '__main__':
         app.debug = True
         port = 5000
         host = '127.0.0.1'
-    app.run(threaded=True, host=host, port=port)
+    app.run(host=host, port=port)
