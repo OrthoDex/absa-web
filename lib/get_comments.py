@@ -7,16 +7,21 @@ import httplib2
 import os
 import sys
 
-from apiclient.discovery import build
-from apiclient.errors import HttpError
-from oauth2client.client import flow_from_clientsecrets
-from oauth2client.file import Storage
-from oauth2client.tools import argparser, run_flow
+import googleapiclient.discovery
+# from oauth2client.client import flow_from_clientsecrets
+# from oauth2client.file import Storage
+# from oauth2client.tools import argparser, run_flow
 
 # The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
 # the OAuth 2.0 information for this application, including its client_id and
 # client_secret.
-CLIENT_SECRETS_FILE = "./lib/credentials/client_secrets.json"
+# CLIENT_SECRETS_FILE = "./lib/credentials/client_secrets.json"
+
+# Disable OAuthlib's HTTPS verification when running locally.
+# *DO NOT* leave this option enabled in production.
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
+DEVELOPER_KEY = os.environ.get("YOUTUBE_API_KEY")
 
 # This OAuth 2.0 access scope allows for full read/write access to the
 # authenticated user's account and requires requests to use an SSL connection.
@@ -31,29 +36,6 @@ API_VERSION = "v3"
 MISSING_CLIENT_SECRETS_MESSAGE = "WARNING: Please configure OAuth 2.0"
 
 class GetComments:
-
-	# Authorize the request and store authorization credentials.
-	def get_authenticated_service():
-	  flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE, scope=YOUTUBE_READ_WRITE_SSL_SCOPE,
-	    message=MISSING_CLIENT_SECRETS_MESSAGE)
-
-	  storage = Storage("./lib/credentials/youtube-api-snippets-oauth2.json")
-	  credentials = storage.get()
-	  args = dict()
-
-	  if credentials is None or credentials.invalid:
-	    credentials = run_flow(flow, storage, args)
-
-	  # Trusted testers can download this discovery document from the developers page
-	  # and it should be in the same directory with the code.
-	  return build(API_SERVICE_NAME, API_VERSION,
-	      http=credentials.authorize(httplib2.Http()))
-
-	service = get_authenticated_service()
-
-	def print_results(results):
-	  print(results)
-
 	# Build a resource based on a list of properties given as key-value pairs.
 	# Leave properties with empty values out of the inserted resource.
 	def build_resource(properties):
@@ -106,15 +88,24 @@ class GetComments:
 	# Sample python code for comments.list
 
 	def comments_list(self, **kwargs):
-	  kwargs = self.remove_empty_kwargs(**kwargs)
-	  results = GetComments.service.commentThreads().list(
-	    **kwargs
-      ).execute()
-	  comments = list()
+		kwargs = self.remove_empty_kwargs(**kwargs)
+		
+		youtube = googleapiclient.discovery.build(
+			API_SERVICE_NAME, 
+			API_VERSION, 
+			developerKey = DEVELOPER_KEY,
+			cache_discovery=False
+		)
 
-	  for item in results["items"]:
-		  comment = item["snippet"]["topLevelComment"]
-		  text = comment["snippet"]["textOriginal"]
-		  comments.append(text)
+		results = youtube.commentThreads().list(
+			**kwargs
+		).execute()
 
-	  return comments
+		comments = list()
+
+		for item in results["items"]:
+			comment = item["snippet"]["topLevelComment"]
+			text = comment["snippet"]["textOriginal"]
+			comments.append(text)
+
+		return comments

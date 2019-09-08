@@ -7,7 +7,7 @@ from flask import json
 
 on_heroku = os.environ.get('ON_HEROKU')
 
-if on_heroku:
+if on_heroku == 'True':
     SOCKET_IO_BROKER = os.environ.get('REDISCLOUD_URL')
     CELERY_BROKER = os.environ.get("REDIS_URL")
 else:

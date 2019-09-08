@@ -1,9 +1,12 @@
 from textblob import TextBlob, Word
-from string import punctuation
+from string import punctuation, printable
 from nltk.corpus import stopwords
 import re
 
 def clean_sentence(sentence):
+    # Remove non printable strings
+    sentence = filter(lambda x: x in set(printable), sentence)
+    # lower case all letters
     sentence = re.sub(r"(?:\@|https?\://)\S+|\n+", "", sentence.lower())
     # Fix spelling errors in comments!
     sent = TextBlob(sentence)

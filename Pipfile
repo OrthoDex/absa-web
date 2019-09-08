@@ -1,0 +1,32 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+apiclient = "==1.0.3"
+celery = "==4.1.0"
+google-api-python-client = "==1.6.2"
+httplib2 = "==0.10.3"
+jsonschema = "==2.6.0"
+kombu = "==4.1.0"
+nltk = "==3.2.2"
+oauth2client = "==4.1.2"
+plotly = "==2.0.7"
+python-socketio = "==1.8.0"
+redis = "==2.10.5"
+requests = "==2.13.0"
+textblob = "==0.12.0"
+urllib3 = "==1.21.1"
+Flask = "==0.10.1"
+Flask-SocketIO = "==2.9.2"
+Flask-SQLAlchemy = "==2.0"
+Flask-WTF = "==0.14.2"
+Jinja2 = "==2.7.3"
+Werkzeug = "==0.10.4"
+WTForms = "==2.1"
+
+[requires]
+python_version = "2.7"
