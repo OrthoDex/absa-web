@@ -3,6 +3,14 @@ import os
 import lib
 import socketio
 
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+sentry_sdk.init(
+    dsn=os.environ.get('SENTRY_DSN'),
+    integrations=[FlaskIntegration()]
+)
+
 app = Flask(__name__, static_url_path='', static_folder='public', template_folder='public')
 app.config['STATIC_FOLDER'] = 'public'
 

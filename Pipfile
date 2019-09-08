@@ -29,6 +29,7 @@ Werkzeug = "==0.10.4"
 WTForms = "==2.1"
 gunicorn = "*"
 eventlet = "*"
+sentry-sdk = {extras = ["flask"],version = "==0.11.2"}
 
 [requires]
 python_version = "2.7"
